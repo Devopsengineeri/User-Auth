@@ -1,0 +1,68 @@
+/* NavBar.css */
+
+/* General navbar styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo .logo {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Move the navbar links to the left side of the logo */
+.navbar-links {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  margin-left: 20px; /* Adds spacing between logo and the links */
+}
+
+.navbar-links li {
+  margin-right: 20px; /* Adjust space between links */
+}
+
+.nav-link {
+  color: white;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #f4a261;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .navbar-logo {
+    margin-bottom: 10px;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .navbar-links li {
+    margin-bottom: 10px;
+  }
+}
