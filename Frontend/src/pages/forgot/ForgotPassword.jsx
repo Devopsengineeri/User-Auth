@@ -27,7 +27,7 @@ export default function ForgotPassword() {
     setErrors(errorMessages);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = validateForm();
@@ -36,6 +36,16 @@ export default function ForgotPassword() {
       toast.error("Please fix the highlighted errors.");
       return;
     }
+
+    const response = await fetch(`http://localhost:5000/app/ForgotPassword`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json", // This header is necessary to tell the server that you're sending JSON
+      },
+      body: JSON.stringify(formData), // Make sure to send the data as a JSON string
+    });
+
+    console.log(response, "sdfsdgg");
 
     console.log("Reset code sent to:", formData.email);
     toast.success("Reset code sent to your email!");
@@ -56,7 +66,6 @@ export default function ForgotPassword() {
         validationErrors.email = error.message;
       }
     }
-
     return validationErrors;
   };
 

@@ -1,5 +1,6 @@
 const { json } = require("stream/consumers");
 const User = require("../models/user.model");
+const nodeMailer = require("nodemailer");
 
 const bcrypt = require("bcrypt");
 const { message } = require("../validators/userObject.valid");
@@ -21,11 +22,10 @@ const registration = async (req, res) => {
   try {
     const { firstName, lastName, email, dob, password, confirmPassword } =
       req.body;
+    console.log("Email", email);
 
-    const userExist = await User.findOne({
-      email: email,
-    });
-
+    const userExist = await User.findOne({ email });
+    console.log("userExist:", userExist);
     if (userExist) {
       return res
         .status(400)
@@ -35,7 +35,8 @@ const registration = async (req, res) => {
       path: req.file.path, // Full file path
       filename: req.file.filename, // Generated filename
     };
-    console.log(profilePicture, "jjjjj");
+
+    console.log(profilePicture);
     const Store = await User.create({
       firstName,
       lastName,
@@ -93,10 +94,11 @@ const login = async (req, res) => {
 };
 
 //forgot Password
-const userForgotPassword = async (req, res) => {
+const ForgotPassword = async (req, res) => {
   try {
     // object destrcuturing
     const { email } = req.body;
+    console.log(req.body);
     if (!email) {
       return res.status(403).json({ message: "Bad Request:-Email Not Found" });
     }
@@ -116,6 +118,24 @@ const userForgotPassword = async (req, res) => {
         otpExpiration,
       }
     );
+    // console.log(User.otp, "asjfkksdhjsldg");
+    // //connect with smtp server
+    const transporter = await nodeMailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        user: "jaden.kozey@ethereal.email",
+        pass: "J4GjMssBcdVzHt9xBE",
+      },
+    });
+    // Set up the email transporter
+    await transporter.sendMail({
+      from: ' "User-Auth" <Userauth@ethereal.email>', // sender address
+      to: email,
+      subject: "OTP for Password Reset", // subject line
+      text: `Your OTP for resetting your password is: ${otp}`, // plain text body
+      html: `<p>Your OTP for resetting your password is: <strong>${otp}</strong></p>`,
+    });
     return res
       .status(200)
       .json({ message: "Request Sent Successfully! Please Check Your email" });
@@ -144,11 +164,44 @@ const userUpload = async (req, res) => {
   }
 };
 
+//send email
+const sendMail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.send("eamil is required");
+    }
+    // let testAccount = await nodeMailer.createTestAccount();
+    //connect with smtp server
+    const transporter = await nodeMailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        user: "jaden.kozey@ethereal.email",
+        pass: "J4GjMssBcdVzHt9xBE",
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: ' "Sumit kumar" <jaden.kozey@ethereal.email>', // sender address
+      to: email,
+      subject: "hello sumit", //subject line
+      text: "hello yt thapa", // plain text body
+      html: "<b>hello ty sumit</b>", // html body
+    });
+    console.log("info:", info);
+    res.json({ msg: "successfull send eamil", info });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
 module.exports = {
   registration,
   home,
   login,
-  userForgotPassword,
+  ForgotPassword,
   userUpload,
   upload,
+  sendMail,
 };

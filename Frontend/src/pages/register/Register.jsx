@@ -1,11 +1,13 @@
 import "./Register.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
 
 export default function Register() {
+  const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -86,32 +88,46 @@ export default function Register() {
     }
     console.log(formData, "form");
 
-    const newFormData = new FormData();
+    try {
+      const newFormData = new FormData();
 
-    for (let key in formData) {
-      newFormData.append(key, formData[key]);
+      for (let key in formData) {
+        newFormData.append(key, formData[key]);
+      }
+
+      const response = await fetch(`http://localhost:5000/app/registration`, {
+        method: "POST",
+        body: newFormData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "User already Exist Try Diff email !"
+        );
+      }
+
+      // If no errors, submit the form
+      toast.success("Form submitted successfully!");
+
+      console.log("Form submitted successfully:", formData);
+
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        dob: "",
+        profilePicture: " ",
+        password: "",
+        confirmPassword: "",
+      });
+      setErrors({});
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Reset the file input
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to submit Form");
     }
-
-    const response = await fetch(`http://localhost:5000/app/registration`, {
-      method: "POST",
-      body: newFormData,
-    });
-
-    // If no errors, submit the form
-    toast.success("Form submitted successfully!");
-
-    console.log("Form submitted successfully:", formData);
-
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      dob: "",
-      profilePicture: "",
-      password: "",
-      confirmPassword: "",
-    });
-    setErrors({});
   };
 
   return (
@@ -189,6 +205,7 @@ export default function Register() {
               name="profilePicture"
               id="profilePicture"
               accept=".jpg, .png"
+              ref={fileInputRef}
               // value={formData.profilePicture}
               onChange={handleChange}
             />

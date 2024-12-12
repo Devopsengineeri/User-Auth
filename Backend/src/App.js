@@ -9,17 +9,22 @@ const router = require("./routes/user.route");
 const { truncate } = require("fs");
 const app = express();
 const port = process.env.PORT || 5000;
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 const corsOption = {
   origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
-  credentials: true,
+  // methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+  // credentials: true,
 };
 
 app.use(cors(corsOption));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.get("/", (req, res) => {
   res.send(";afnkgnklfhndth");
+});
+
+app.patch("/test/abc", (req, res) => {
+  console.log(req.body, "sss");
 });
 
 app.use("/app", router);
