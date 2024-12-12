@@ -1,11 +1,13 @@
 import "./Register.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
 
 export default function Register() {
+  const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -70,7 +72,8 @@ export default function Register() {
     } catch (error) {
       validationErrors.password = error.message;
     }
-
+    
+    
     if (formData.password !== formData.confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match.";
     }
@@ -86,7 +89,8 @@ export default function Register() {
     }
     console.log(formData, "form");
 
-    const newFormData = new FormData();
+    try {
+      const newFormData = new FormData();
 
     for (let key in formData) {
       newFormData.append(key, formData[key]);
@@ -96,6 +100,11 @@ export default function Register() {
       method: "POST",
       body: newFormData,
     });
+
+    if(!response.ok){
+      const errorData = await response.json();
+      throw new Error(errorData.message || "User already Exist Try Diff email !");
+    }
 
     // If no errors, submit the form
     toast.success("Form submitted successfully!");
@@ -107,11 +116,19 @@ export default function Register() {
       lastName: "",
       email: "",
       dob: "",
-      profilePicture: "",
+      profilePicture: " ",
       password: "",
       confirmPassword: "",
     });
     setErrors({});
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset the file input
+    }
+      
+    } catch (error) {
+      toast.error(error.message || "Failed to submit Form")
+      
+    }
   };
 
   return (
@@ -189,6 +206,7 @@ export default function Register() {
               name="profilePicture"
               id="profilePicture"
               accept=".jpg, .png"
+              ref={fileInputRef}
               // value={formData.profilePicture}
               onChange={handleChange}
             />
