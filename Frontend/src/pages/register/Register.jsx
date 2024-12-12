@@ -72,7 +72,8 @@ export default function Register() {
     } catch (error) {
       validationErrors.password = error.message;
     }
-
+    
+    
     if (formData.password !== formData.confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match.";
     }
@@ -86,6 +87,7 @@ export default function Register() {
       toast.error("Please fix the highlighted errors.");
       return;
     }
+    
     console.log(formData, "form");
 
     try {
@@ -128,6 +130,43 @@ export default function Register() {
     } catch (error) {
       toast.error(error.message || "Failed to submit Form");
     }
+<<<<<<< HEAD
+=======
+
+    const response = await fetch(`http://localhost:5000/app/registration`, {
+      method: "POST",
+      body: newFormData,
+    });
+
+    if(!response.ok){
+      const errorData = await response.json();
+      throw new Error(errorData.message || "User already Exist Try Diff email !");
+    }
+
+    // If no errors, submit the form
+    toast.success("Form submitted successfully!");
+
+    console.log("Form submitted successfully:", formData);
+
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      dob: "",
+      profilePicture: " ",
+      password: "",
+      confirmPassword: "",
+    });
+    setErrors({});
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset the file input
+    }
+      
+    } catch (error) {
+      toast.error(error.message || "Failed to submit Form")
+      
+    }
+>>>>>>> 95eff27529122da7253245687b8857f13d526bb1
   };
 
   return (
