@@ -1,11 +1,12 @@
 import "./Login.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,7 +31,10 @@ export default function Login() {
     }
 
     try {
-      validateString(formData.password).passwordValidation().minLength(8).maxLength(20);
+      validateString(formData.password)
+        .passwordValidation()
+        .minLength(8)
+        .maxLength(20);
     } catch (error) {
       validationErrors.password = error.message;
     }
@@ -40,8 +44,11 @@ export default function Login() {
       toast.error("Please fix the highlighted errors.");
       return;
     }
+    if(formData.email){
+      navigate("/securePage")
+      toast.success("Login successful!");
+    }
 
-    toast.success("Login successful!");
 
     setFormData({
       email: "",
@@ -87,7 +94,9 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
             />
-            {errors.password && <span className="error">{errors.password}</span>}
+            {errors.password && (
+              <span className="error">{errors.password}</span>
+            )}
           </div>
 
           <button type="submit">Login</button>

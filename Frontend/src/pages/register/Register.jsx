@@ -87,6 +87,7 @@ export default function Register() {
       toast.error("Please fix the highlighted errors.");
       return;
     }
+    
     console.log(formData, "form");
 
     try {

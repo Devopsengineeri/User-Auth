@@ -1,5 +1,5 @@
 import "./ForgotPassword.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,52 +12,44 @@ export default function ForgotPassword() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    let errorMessages = { ...errors };
-
-    try {
-      if (name === "email") {
-        validateString(value).emailValidation().minLength(8);
-        delete errorMessages[name];
-      }
-    } catch (error) {
-      errorMessages[name] = error.message;
-    }
-
-    setErrors(errorMessages);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const validationErrors = validateForm();
+    const validationErrors = {};
+
+    try {
+      validateString(formData.email).emailValidation().minLength(8);
+    } catch (error) {
+      validationErrors.email = error.message;
+    }
+
+    try {
+      validateString(formData.password)
+        .passwordValidation()
+        .minLength(8)
+        .maxLength(20);
+    } catch (error) {
+      validationErrors.password = error.message;
+    }
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast.error("Please fix the highlighted errors.");
       return;
     }
 
-    console.log("Reset code sent to:", formData.email);
+    try {
+      console.log("Reset code sent to:", formData.email);
     toast.success("Reset code sent to your email!");
 
-    setFormData({ email: "" });
+    setFormData({ email: "", password: "" });
     setErrors({});
-  };
-
-  const validateForm = () => {
-    const validationErrors = {};
-
-    if (!formData.email) {
-      validationErrors.email = "Email is required.";
-    } else {
-      try {
-        validateString(formData.email).emailValidation().minLength(8);
-      } catch (error) {
-        validationErrors.email = error.message;
-      }
+    } catch (error) {
+      toast.error(error.message || "Failed to Login")
+      
     }
-
-    return validationErrors;
   };
 
   return (

@@ -1,0 +1,47 @@
+.user-dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align towards the upper part of the screen */
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding-top: 50px; /* Adjust spacing from the top */
+  }
+  
+  .dashboard-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 500px; /* Larger container width */
+    text-align: center;
+    padding: 40px; /* Add padding for better spacing */
+  }
+  
+  .profile-picture-section {
+    margin-bottom: 30px;
+  }
+  
+  .profile-picture {
+    width: 200px; /* Larger profile picture size */
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #007bff;
+  }
+  
+  .user-details-section {
+    color: #333;
+  }
+  
+  .user-name {
+    font-size: 28px; /* Larger font for the name */
+    font-weight: bold;
+    margin: 15px 0;
+  }
+  
+  .user-email,
+  .user-dob {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #555;
+  }
+  
