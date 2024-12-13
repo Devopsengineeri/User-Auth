@@ -76,6 +76,7 @@ const login = async (req, res) => {
     const userEmailMatch = await User.findOne({
       email: email,
     });
+
     if (!userEmailMatch) {
       return res.status(404).json({ msg: "User not found,Please SignUp !!" });
     }
@@ -83,6 +84,7 @@ const login = async (req, res) => {
       password,
       userEmailMatch.password
     );
+    console.log(isMatchPassword);
     if (!isMatchPassword) {
       return res.status(401).json({ msg: "Invalid email and password" });
     }
@@ -124,8 +126,8 @@ const ForgotPassword = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: 'orin.quitzon13@ethereal.email',
-        pass: 'h6MhxUa6wJFFjZwzSw'
+        user: "orin.quitzon13@ethereal.email",
+        pass: "h6MhxUa6wJFFjZwzSw",
       },
     });
     // Set up the email transporter

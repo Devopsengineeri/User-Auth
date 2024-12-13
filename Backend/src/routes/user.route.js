@@ -17,7 +17,7 @@ console.log(registration);
 
 router.post("/registration", upload.single("profilePicture"), registration);
 router.get("/home", home);
-router.get("/login", login);
+router.post("/", login);
 router.patch("/ForgotPassword", ForgotPassword);
 router.post("/userUpload", upload.single("profilePicture"), userUpload);
 router.patch("/sendMail", sendMail);

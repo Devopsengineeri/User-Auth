@@ -34,7 +34,7 @@ export default function ForgotPassword() {
       const response = await fetch(`http://localhost:5000/app/ForgotPassword`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json", 
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -77,7 +77,11 @@ export default function ForgotPassword() {
                 value={formData.email}
                 onChange={handleChange}
               />
-              {errors.email && <span className="error" aria-live="polite">{errors.email}</span>}
+              {errors.email && (
+                <span className="error" aria-live="polite">
+                  {errors.email}
+                </span>
+              )}
             </div>
             <button type="submit" className="button">
               Send Reset Code

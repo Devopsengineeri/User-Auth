@@ -19,7 +19,7 @@ export default function Login() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = {};
@@ -44,11 +44,27 @@ export default function Login() {
       toast.error("Please fix the highlighted errors.");
       return;
     }
-    if(formData.email){
-      navigate("/securePage")
-      toast.success("Login successful!");
+
+    try {
+      const response = await fetch(`http://localhost:5000/app/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      console.log(response, "sdjgfgj");
+    } catch (error) {
+      console.log(error, "error login");
     }
 
+    if (formData.email) {
+      navigate("/securePage");
+      toast.success("Login successful!");
+    }
 
     setFormData({
       email: "",
