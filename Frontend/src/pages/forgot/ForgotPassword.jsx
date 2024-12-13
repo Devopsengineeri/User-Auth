@@ -1,11 +1,12 @@
 import "./ForgotPassword.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
 
 export default function ForgotPassword() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "" });
   const [errors, setErrors] = useState({});
 
@@ -16,6 +17,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     const validationErrors = {};
 
     try {
@@ -45,6 +47,7 @@ export default function ForgotPassword() {
       }
 
       toast.success("Reset code sent to your email!");
+      navigate("/otpverify");
       setFormData({ email: "" });
       setErrors({});
     } catch (error) {
@@ -70,7 +73,7 @@ export default function ForgotPassword() {
                 Email Address
               </label>
               <input
-                type="email"
+                type="text"
                 id="email"
                 name="email"
                 placeholder="Enter your email"
