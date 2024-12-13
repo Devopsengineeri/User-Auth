@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+//user regiter
 const registration = async (req, res) => {
   try {
     const { firstName, lastName, email, dob, password, confirmPassword } =
@@ -198,6 +199,55 @@ const sendMail = async (req, res) => {
   }
 };
 
+//otp validation
+const otpverify = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { otp, email } = req.body;
+    if (!otp) {
+      res.status(400).json({ msg: "Bad Request:- OTP is required" });
+    }
+    const isEmail = await User.findOne({ email: email });
+    if (!isEmail) {
+      res.status(404).json({ msg: "Not Found" });
+    }
+    if (isEmail.otp !== otp) {
+      res.status(401).json({ msg: " invalid OTP" });
+    }
+    res.status(200).json({ msg: "Your OTP Verify Successfull" });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal Server Error", error });
+  }
+};
+
+//reset password
+
+const resetPass = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { email, password } = req.body;
+    if (!password) {
+      res.status(400).json({ msg: "Bad request:- Password is required" });
+    }
+    const isEmail = await User.findOne({ email: email });
+    if (!isEmail) {
+      res.status(404).json({ msg: "Not found" });
+    }
+    console.log(isEmail, "dsfsdgsfh");
+
+    // Hash the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    //update password
+    isEmail.password = hashedPassword;
+    isEmail.save();
+
+    res.status(200).json({ msg: "Password reset Successfull" });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal Server error" });
+  }
+};
+
 module.exports = {
   registration,
   home,
@@ -206,4 +256,6 @@ module.exports = {
   userUpload,
   upload,
   sendMail,
+  otpverify,
+  resetPass,
 };
