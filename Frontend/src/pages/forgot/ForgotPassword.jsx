@@ -16,7 +16,6 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = {};
 
     try {
@@ -25,42 +24,32 @@ export default function ForgotPassword() {
       validationErrors.email = error.message;
     }
 
-    try {
-      validateString(formData.password)
-        .passwordValidation()
-        .minLength(8)
-        .maxLength(20);
-    } catch (error) {
-      validationErrors.password = error.message;
-    }
-
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast.error("Please fix the highlighted errors.");
       return;
     }
 
-    const response = await fetch(`http://localhost:5000/app/ForgotPassword`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json", // This header is necessary to tell the server that you're sending JSON
-      },
-      body: JSON.stringify(formData), // Make sure to send the data as a JSON string
-    });
-
-    console.log(response, "sdfsdgg");
-
     try {
-      console.log("Reset code sent to:", formData.email);
-      toast.success("Reset code sent to your email!");
+      const response = await fetch(`http://localhost:5000/app/ForgotPassword`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+        body: JSON.stringify(formData),
+      });
 
-      setFormData({ email: "", password: "" });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Request failed.");
+      }
+
+      toast.success("Reset code sent to your email!");
+      setFormData({ email: "" });
       setErrors({});
     } catch (error) {
-      toast.error(error.message || "Failed to Login");
+      toast.error(error.message || "Something went wrong.");
     }
-
-    return validationErrors;
   };
 
   return (
@@ -88,7 +77,7 @@ export default function ForgotPassword() {
                 value={formData.email}
                 onChange={handleChange}
               />
-              {errors.email && <span className="error">{errors.email}</span>}
+              {errors.email && <span className="error" aria-live="polite">{errors.email}</span>}
             </div>
             <button type="submit" className="button">
               Send Reset Code

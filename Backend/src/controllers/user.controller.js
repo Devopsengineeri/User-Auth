@@ -124,8 +124,8 @@ const ForgotPassword = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "jaden.kozey@ethereal.email",
-        pass: "J4GjMssBcdVzHt9xBE",
+        user: 'orin.quitzon13@ethereal.email',
+        pass: 'h6MhxUa6wJFFjZwzSw'
       },
     });
     // Set up the email transporter
