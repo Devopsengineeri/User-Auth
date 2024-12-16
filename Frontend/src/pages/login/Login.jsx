@@ -56,22 +56,21 @@ export default function Login() {
           password: formData.password,
         }),
       });
-      console.log(response, "sdjgfgj");
-    } catch (error) {
-      console.log(error, "error login");
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Invalid login credentials!");
+      }
 
-    if (formData.email) {
-      navigate("/securePage");
+      const data = await response.json();
+
       toast.success("Login successful!");
+      setFormData({email: "", password: "",});
+      setErrors({});
+
+      navigate("/securepage")
+    } catch (error) {
+      toast.error(error.message || "Failed to login");
     }
-
-    setFormData({
-      email: "",
-      password: "",
-    });
-
-    setErrors({});
   };
 
   return (

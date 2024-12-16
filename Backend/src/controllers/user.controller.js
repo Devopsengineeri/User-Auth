@@ -113,7 +113,7 @@ const ForgotPassword = async (req, res) => {
     const otp = Math.ceil(Math.random() * 1000000);
     //exppire timing otp
     const otpExpiration = new Date().getTime() + 1 * 60 * 1000;
-    // same mail pr mail krna h aur bolna h=ki bhai otp submit kro
+    // same mail pr mail krna h aur bolna h ki bhai otp submit kro
     await User.findOneAndUpdate(
       { email },
       {
@@ -127,8 +127,8 @@ const ForgotPassword = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "orin.quitzon13@ethereal.email",
-        pass: "h6MhxUa6wJFFjZwzSw",
+        user: 'maya.rath26@ethereal.email',
+        pass: 'kgnRf9KgggYnv6jFCZ'
       },
     });
     // Set up the email transporter
@@ -180,8 +180,8 @@ const sendMail = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "jaden.kozey@ethereal.email",
-        pass: "J4GjMssBcdVzHt9xBE",
+        user: 'maya.rath26@ethereal.email',
+        pass: 'kgnRf9KgggYnv6jFCZ'
       },
     });
 

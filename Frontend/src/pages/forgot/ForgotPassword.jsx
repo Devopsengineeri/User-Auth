@@ -47,9 +47,9 @@ export default function ForgotPassword() {
       }
 
       toast.success("Reset code sent to your email!");
-      navigate("/otpverify");
       setFormData({ email: "" });
       setErrors({});
+      navigate("/otpverify");
     } catch (error) {
       toast.error(error.message || "Something went wrong.");
     }

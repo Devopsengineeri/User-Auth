@@ -1,9 +1,69 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { validateString } from "../validation/validation-fn";
+import { toast, ToastContainer } from "react-toastify";
+import { useState } from "react";
 
 export default function ResetPass() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const validationErrors = {};
+
+    try {
+      validateString(formData.password)
+        .passwordValidation()
+        .minLength(8)
+        .maxLength(20);
+    } catch (error) {
+      validationErrors.password = error.message;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      validationErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.error("Please fix the highlighted errors.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/app/resetpass`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Request failed.");
+      }
+
+      toast.success("Your password has been reset successfully!");
+      setFormData({ password: "", confirmPassword: "" });
+      setErrors({});
+    } catch (error) {
+      toast.error(error.message || "Something went wrong.");
+    }
+  };
   return (
     <>
-    <div className="container">
+      <div className="container">
         <div className="form-container">
           <h2 className="header">
             <img
@@ -13,30 +73,35 @@ export default function ResetPass() {
             />{" "}
             Reset Password
           </h2>
-          <form>
-            <div className="input-group">
-              <label htmlFor="password" className="label">
-                Password 
-              </label>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
-                id="password"
                 name="password"
+                id="password"
                 placeholder="Enter Password"
-                // value=''
+                value={formData.password}
+                onChange={handleChange}
               />
+              {errors.password && (
+                <span className="error">{errors.password}</span>
+              )}
             </div>
-            <div className="input-group">
-              <label htmlFor="confirm-password" className="label">
-                Confirm Password
-              </label>
+
+            <div className="form-group">
+              <label htmlFor="confirm-password">Confirm Password</label>
               <input
                 type="password"
-                id="confrimPassword"
-                name="confirm-Password"
-                placeholder="Re-enter Password "
-                // value=''
+                name="confirmPassword"
+                id="confirm-password"
+                placeholder="Re-enter Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
               />
+              {errors.confirmPassword && (
+                <span className="error">{errors.confirmPassword}</span>
+              )}
             </div>
             <button type="submit" className="button">
               Reset Password
@@ -49,6 +114,7 @@ export default function ResetPass() {
           </form>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
-  )
+  );
 }
