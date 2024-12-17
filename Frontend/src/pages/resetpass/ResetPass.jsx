@@ -1,15 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { validateString } from "../validation/validation-fn";
 import { toast, ToastContainer } from "react-toastify";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ResetPass() {
+  const navigate = useNavigate();
+  const location = useLocation(); // Import useLocation
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Extract email from URL query parameters
+    const params = new URLSearchParams(location.search);
+    const email = params.get("email") || "";
+    setFormData((prev) => ({ ...prev, email }));
+  }, [location.search]); // Depend on location.search, not navigate.search
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,12 +64,14 @@ export default function ResetPass() {
       }
 
       toast.success("Your password has been reset successfully!");
+      navigate("/"); 
       setFormData({ password: "", confirmPassword: "" });
       setErrors({});
     } catch (error) {
       toast.error(error.message || "Something went wrong.");
     }
   };
+
   return (
     <>
       <div className="container">
@@ -74,6 +85,18 @@ export default function ResetPass() {
             Reset Password
           </h2>
           <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label htmlFor="email" className="label">
+                Email Address
+              </label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                value={formData.email}
+                readOnly
+              />
+            </div>
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <input

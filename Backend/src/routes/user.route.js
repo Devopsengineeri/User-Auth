@@ -17,11 +17,11 @@ const validate = require("../middleware/validate.middlew");
 const userObjectSchema = require("../validators/userObject.valid");
 console.log(registration);
 
-router.post("/registration", upload.single("profilepicture"), registration);
+router.post("/registration", upload.single("profilePicture"), registration);
 router.get("/home", home);
 router.post("/", login);
 router.patch("/forgotpassword", ForgotPassword);
-router.post("/userupload", upload.single("profilepicture"), userUpload);
+router.post("/userUpload", upload.single("profilePicture"), userUpload);
 router.patch("/sendmail", sendMail);
 router.post("/otpverify", otpverify);
 router.patch("/resetpass", resetPass);

@@ -1,16 +1,23 @@
-import { useState } from "react";
-import "./OtpVerify.css"
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { validateString } from "../validation/validation-fn";
 import { toast, ToastContainer } from "react-toastify";
+import "./OtpVerify.css";
 
 export default function OtpVerify() {
-  const [formData , setFormData] = useState({
-    otp:"",
-    email: ""
-  })
-
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    otp: "",
+    email: "",
+  });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Extract email from URL query parameters
+    const params = new URLSearchParams(location.search);
+    const email = params.get("email") || "";
+    setFormData((prev) => ({ ...prev, email }));
+  }, [navigate.search]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +27,7 @@ export default function OtpVerify() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationErrors = {}
+    const validationErrors = {};
 
     try {
       validateString(formData.otp);
@@ -29,9 +36,9 @@ export default function OtpVerify() {
     }
 
     if (isNaN(Number(formData.otp))) {
-      throw new Error("OTP must be a numeric value.");
+      validationErrors.otp = "OTP must be a numeric value.";
     }
-  
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast.error("Please fix the highlighted errors.");
@@ -40,14 +47,12 @@ export default function OtpVerify() {
 
     try {
       const response = await fetch(`http://localhost:5000/app/otpverify`, {
-        method: "post",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-
-      console.log("Server Response:", response);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -55,15 +60,14 @@ export default function OtpVerify() {
       }
 
       const data = await response.json();
-      toast.success("OTP verified")
-      setFormData({otp:"", email:""})
-      setErrors({})
-      
+      toast.success("OTP verified");
+      navigate(`/resetpass?email=${encodeURIComponent(formData.email)}`);
+      // setFormData({ otp: "", email: "" });
+      // setErrors({});
     } catch (error) {
-      toast.error("Failed to verify OTP")
+      toast.error(error.message || "Failed to verify OTP");
     }
-  }
-  
+  };
 
   return (
     <>
@@ -79,14 +83,27 @@ export default function OtpVerify() {
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="input-group">
+              <label htmlFor="email" className="label">
+                Email Address
+              </label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                value={formData.email}
+                readOnly
+              />
+            </div>
+            <div className="input-group">
               <label htmlFor="otp" className="label">
-                 OTP
+                OTP
               </label>
               <input
                 type="text"
                 id="otp"
                 name="otp"
                 placeholder="Enter OTP"
+                value={formData.otp}
                 onChange={handleChange}
               />
               {errors.otp && <span className="error">{errors.otp}</span>}
