@@ -18,21 +18,21 @@ const userSchema = new mongoose.Schema({
 });
 
 //Add a method to generate a JWT token
-userSchema.methods.generateToken = async function () {
-  try {
-    return jwt.sign(
-      {
-        userId: this._id.toString(),
-        email: this.email,
-        isAuth: this.isAuth,
-      },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "30d" }
-    );
-  } catch (error) {
-    console.error(error);
-  }
-};
+// userSchema.methods.generateToken = async function () {
+//   try {
+//     return jwt.sign(
+//       {
+//         userId: this._id.toString(),
+//         email: this.email,
+//         isAuth: this.isAuth,
+//       },
+//       process.env.JWT_SECRET_KEY,
+//       { expiresIn: "30d" }
+//     );
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 //hashing password of user
 userSchema.pre("save", async function (next) {
@@ -41,7 +41,6 @@ userSchema.pre("save", async function (next) {
   if (!userPassword.isModified("password")) {
     next();
   }
-
   try {
     const setRound = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(userPassword.password, setRound);

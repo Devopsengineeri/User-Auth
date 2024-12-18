@@ -1,9 +1,6 @@
 import "./SecurePage.css"; // Add appropriate styles in this CSS file
 
 const SecurePage = () => {
-
-  
-
   return (
     <div className="user-dashboard-container">
       <div className="dashboard-card">

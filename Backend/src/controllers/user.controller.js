@@ -1,7 +1,7 @@
 const { json } = require("stream/consumers");
 const User = require("../models/user.model");
 const nodeMailer = require("nodemailer");
-
+const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { message } = require("../validators/userObject.valid");
 const multer = require("multer");
@@ -89,7 +89,21 @@ const login = async (req, res) => {
     if (!isMatchPassword) {
       return res.status(401).json({ msg: "Invalid email and password" });
     }
-    res.status(200).json({ msg: "login Successfull" });
+
+    const authToken = JWT.sign({ ...isMatchPassword }, "secretKey", {
+      expiresIn: "2h",
+    });
+
+    // Set cookie
+    res.cookie("authToken", authToken, {
+      httpOnly: true, // Prevent client-side access
+      secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Required for cross-site cookies
+    });
+    console.log("token ", authToken);
+    return res
+      .status(200)
+      .json({ msg: "login Successfull", user: userEmailMatch });
   } catch (error) {
     console.error("Error during login", error);
     res.status(500).json({ msg: "Internal Server Error" });
@@ -97,7 +111,7 @@ const login = async (req, res) => {
 };
 
 //forgot Password
-const ForgotPassword = async (req, res) => {
+const forgotpassword = async (req, res) => {
   try {
     // object destrcuturing
     const { email } = req.body;
@@ -127,8 +141,8 @@ const ForgotPassword = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: 'maya.rath26@ethereal.email',
-        pass: 'kgnRf9KgggYnv6jFCZ'
+        user: "maya.rath26@ethereal.email",
+        pass: "kgnRf9KgggYnv6jFCZ",
       },
     });
     // Set up the email transporter
@@ -180,8 +194,8 @@ const sendMail = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: 'maya.rath26@ethereal.email',
-        pass: 'kgnRf9KgggYnv6jFCZ'
+        user: "maya.rath26@ethereal.email",
+        pass: "kgnRf9KgggYnv6jFCZ",
       },
     });
 
@@ -222,7 +236,7 @@ const otpverify = async (req, res) => {
 
 //reset password
 
-const resetPass = async (req, res) => {
+const resetpass = async (req, res) => {
   try {
     console.log(req.body);
     const { email, password } = req.body;
@@ -236,15 +250,24 @@ const resetPass = async (req, res) => {
     console.log(isEmail, "dsfsdgsfh");
 
     // Hash the new password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    //update password
-    isEmail.password = hashedPassword;
-    isEmail.save();
-
+    // const saltRounds = 10;
+    // const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // //update password
+    isEmail.password = password;
+    await isEmail.save();
+    console.log((isEmail.password = password), "dhfff");
     res.status(200).json({ msg: "Password reset Successfull" });
   } catch (error) {
     res.status(500).json({ msg: "Internal Server error" });
+  }
+};
+
+const securepage = async (req, res) => {
+  try {
+    const users = await User.findOne();
+    res.status(200).json({ msg: "User Data", users });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
@@ -252,10 +275,11 @@ module.exports = {
   registration,
   home,
   login,
-  ForgotPassword,
+  forgotpassword,
   userUpload,
   upload,
   sendMail,
   otpverify,
-  resetPass,
+  resetpass,
+  securepage,
 };

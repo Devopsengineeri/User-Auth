@@ -7,6 +7,7 @@ import NavBar from "./pages/navbar/Navbar";
 import SecurePage from "./pages/secure/SecurePage";
 import ResetPass from "./pages/resetpass/ResetPass";
 import OtpVerify from "./pages/otpvalidate/OtpVerify";
+import { AuthProvider } from "./pages/context/userContext";
 
 function App() {
   return (

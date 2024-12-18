@@ -51,6 +51,7 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include cookies in the request
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
@@ -64,10 +65,10 @@ export default function Login() {
       const data = await response.json();
 
       toast.success("Login successful!");
-      setFormData({email: "", password: "",});
+      setFormData({ email: "", password: "" });
       setErrors({});
 
-      navigate("/securepage")
+      navigate("/securepage");
     } catch (error) {
       toast.error(error.message || "Failed to login");
     }

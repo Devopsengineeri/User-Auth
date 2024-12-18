@@ -17,35 +17,35 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const validationErrors = {};
-  
+
     try {
       validateString(formData.email).emailValidation().minLength(8);
     } catch (error) {
       validationErrors.email = error.message;
     }
-  
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast.error("Please fix the highlighted errors.");
       return;
     }
-  
+
     try {
-      const response = await fetch(`http://localhost:5000/app/ForgotPassword`, {
+      const response = await fetch(`http://localhost:5000/app/forgotpassword`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Request failed.");
       }
-  
+
       toast.success("Reset code sent to your email!");
       setErrors({});
       navigate(`/otpverify?email=${encodeURIComponent(formData.email)}`);
@@ -53,7 +53,7 @@ export default function ForgotPassword() {
       toast.error(error.message || "Something went wrong.");
     }
   };
-  
+
   return (
     <>
       <div className="container">
