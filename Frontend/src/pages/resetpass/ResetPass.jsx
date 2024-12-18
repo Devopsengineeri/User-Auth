@@ -64,7 +64,7 @@ export default function ResetPass() {
       }
 
       toast.success("Your password has been reset successfully!");
-      navigate("/"); 
+      navigate("/");
       setFormData({ password: "", confirmPassword: "" });
       setErrors({});
     } catch (error) {

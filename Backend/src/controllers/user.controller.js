@@ -7,7 +7,7 @@ const { message } = require("../validators/userObject.valid");
 const multer = require("multer");
 //const upload = multer({ dest: "uploads/" });
 const path = require("path");
-const { rmSync } = require("fs");
+const { rmSync, fstat } = require("fs");
 //user uplode file
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
     return cb(null, Date.now() + path.extname(file.originalname));
   },
 });
+
 const upload = multer({ storage: storage });
 //user regiter
 const registration = async (req, res) => {
@@ -33,7 +34,7 @@ const registration = async (req, res) => {
         .json({ msg: "User Already Exit with this email Try Diffrent" });
     }
     const profilePicture = {
-      path: req.file.path, // Full file path
+      path: req.file.path.toString().replace('\\' ,'//'), 
       filename: req.file.filename, // Generated filename
     };
 
@@ -49,8 +50,8 @@ const registration = async (req, res) => {
     });
     res.status(201).json({
       msg: "Data Store SuccessFull",
-      token: await Store.generateToken(),
-      userId: Store._id.toString(),
+      // token: await Store.generateToken(),
+      // userId: Store._id.toString(),
     });
   } catch (error) {
     console.error({ msg: "this is error" });
@@ -85,14 +86,20 @@ const login = async (req, res) => {
       password,
       userEmailMatch.password
     );
+    console.log(password, userEmailMatch.password);
     console.log(isMatchPassword);
     if (!isMatchPassword) {
       return res.status(401).json({ msg: "Invalid email and password" });
     }
 
-    const authToken = JWT.sign({ ...isMatchPassword }, "secretKey", {
-      expiresIn: "2h",
-    });
+
+    const authToken = JWT.sign(
+      { id: userEmailMatch._id, email: userEmailMatch.email },
+      "secretKey",
+      {
+        expiresIn: "2h",
+      }
+    );
 
     // Set cookie
     res.cookie("authToken", authToken, {
@@ -252,24 +259,32 @@ const resetpass = async (req, res) => {
     // Hash the new password
     // const saltRounds = 10;
     // const hashedPassword = await bcrypt.hash(password, saltRounds);
-    // //update password
+    //update password
+    // isEmail.password = hashedPassword;
     isEmail.password = password;
+
     await isEmail.save();
-    console.log((isEmail.password = password), "dhfff");
+
     res.status(200).json({ msg: "Password reset Successfull" });
   } catch (error) {
     res.status(500).json({ msg: "Internal Server error" });
   }
+
+  // const securepage  = async(req,res)=>{
+  //   try {
+  //     const users = await User.findOne();
+  //     res.status(200).json({ msg: "User Data", users });
+  //   } catch (error) {
+  //     res.status(500).json({ msg: "Internal Server error" });
+
+  //   }
+  // }
 };
 
-const securepage = async (req, res) => {
+async function verifyUserSession(req, res) {
   try {
-    const users = await User.findOne();
-    res.status(200).json({ msg: "User Data", users });
-  } catch (error) {
-    res.status(500).json({ msg: "Internal Server Error" });
-  }
-};
+  } catch (error) {}
+}
 
 module.exports = {
   registration,
@@ -281,5 +296,5 @@ module.exports = {
   sendMail,
   otpverify,
   resetpass,
-  securepage,
+  // securepage,
 };

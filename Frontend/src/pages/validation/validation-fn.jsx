@@ -1,4 +1,3 @@
-import React from "react";
 
 export function validateString(text) {
   const newText = String(text || "").trim();

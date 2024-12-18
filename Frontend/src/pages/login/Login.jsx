@@ -4,9 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
+import { useUserContext } from "../../GlobalContext/UserInfoContext";
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const { setUser } = useUserContext();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -63,11 +67,12 @@ export default function Login() {
       }
 
       const data = await response.json();
-
+      setUser(data.user);
+      console.log(data.user);
+      localStorage.setItem("token", data.token);
       toast.success("Login successful!");
       setFormData({ email: "", password: "" });
       setErrors({});
-
       navigate("/securepage");
     } catch (error) {
       toast.error(error.message || "Failed to login");

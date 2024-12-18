@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateString } from "../validation/validation-fn";
 import { toast, ToastContainer } from "react-toastify";
 import "./OtpVerify.css";
@@ -13,7 +13,6 @@ export default function OtpVerify() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Extract email from URL query parameters
     const params = new URLSearchParams(location.search);
     const email = params.get("email") || "";
     setFormData((prev) => ({ ...prev, email }));
@@ -59,7 +58,7 @@ export default function OtpVerify() {
         throw new Error(errorData.message || "Invalid OTP!");
       }
 
-      const data = await response.json();
+      // const data = await response.json();
       toast.success("OTP verified");
       navigate(`/resetpass?email=${encodeURIComponent(formData.email)}`);
       // setFormData({ otp: "", email: "" });
