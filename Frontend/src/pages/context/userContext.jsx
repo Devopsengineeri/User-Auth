@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Function to handle login
+  // Function to handle loginqq
   const Login = (userData) => {
     setUser(userData);
     setIsLoggedIn(true);

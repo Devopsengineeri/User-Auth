@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   dob: { type: String, required: true },
   password: { type: String, required: true },
-  confirmPassword: { type: String, required: true },
+
   isAuth: { type: Boolean, default: false },
   otp: { type: String, default: null },
   profilePicture: { type: String },

@@ -14,15 +14,13 @@ const validate = (schema) => async (req, res, next) => {
 
 const verifyToken = async (req, res, next) => {
   try {
-    // console.log(req.cookies['authToken'])
-
     const token = req.cookies["authToken"];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized Access" });
     }
 
     const parseToken = Jwt.verify(token, "secretKey");
-    console.log(parseToken.id, "id", parseToken.email);
+
     if (!parseToken) {
       return res.status(404).json({ message: "Not Found" });
     }
@@ -32,11 +30,11 @@ const verifyToken = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
     req.user = user;
-    console.log(user)
+    console.log(user);
 
     next();
   } catch (error) {
-    console.log(error.message);
+    return res.status(401).json({ message: "Unauthorized Access" });
   }
 };
 

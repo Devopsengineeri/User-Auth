@@ -5,7 +5,7 @@ const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { message } = require("../validators/userObject.valid");
 const multer = require("multer");
-//const upload = multer({ dest: "uploads/" });
+
 const path = require("path");
 const { rmSync, fstat } = require("fs");
 //user uplode file
@@ -19,39 +19,35 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-//user regiter
-const registration = async (req, res) => {
+//user regitration form
+const Registration = async (req, res) => {
   try {
     const { firstName, lastName, email, dob, password, confirmPassword } =
       req.body;
-    console.log("Email", email);
 
     const userExist = await User.findOne({ email });
-    console.log("userExist:", userExist);
+
     if (userExist) {
       return res
         .status(400)
         .json({ msg: "User Already Exit with this email Try Diffrent" });
     }
     const profilePicture = {
-      path: req.file.path.toString().replace('\\' ,'//'), 
+      path: req.file.path.toString().replace("\\", "//"),
       filename: req.file.filename, // Generated filename
     };
 
-    console.log(profilePicture);
     const Store = await User.create({
       firstName,
       lastName,
       email,
       dob,
       password,
-      confirmPassword,
+
       profilePicture: profilePicture.path,
     });
     res.status(201).json({
       msg: "Data Store SuccessFull",
-      // token: await Store.generateToken(),
-      // userId: Store._id.toString(),
     });
   } catch (error) {
     console.error({ msg: "this is error" });
@@ -62,7 +58,6 @@ const registration = async (req, res) => {
 const home = async (req, res) => {
   try {
     res.send("jdkjsdvfdln");
-    console.log("ghkhhhhhhdsl");
   } catch (error) {
     res.send(error);
   }
@@ -92,7 +87,6 @@ const login = async (req, res) => {
       return res.status(401).json({ msg: "Invalid email and password" });
     }
 
-
     const authToken = JWT.sign(
       { id: userEmailMatch._id, email: userEmailMatch.email },
       "secretKey",
@@ -118,11 +112,11 @@ const login = async (req, res) => {
 };
 
 //forgot Password
-const forgotpassword = async (req, res) => {
+const ForgotPassword = async (req, res) => {
   try {
     // object destrcuturing
     const { email } = req.body;
-    console.log(req.body);
+
     if (!email) {
       return res.status(403).json({ message: "Bad Request:-Email Not Found" });
     }
@@ -195,8 +189,6 @@ const sendMail = async (req, res) => {
     if (!email) {
       res.send("eamil is required");
     }
-    // let testAccount = await nodeMailer.createTestAccount();
-    //connect with smtp server
     const transporter = await nodeMailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
@@ -221,9 +213,8 @@ const sendMail = async (req, res) => {
 };
 
 //otp validation
-const otpverify = async (req, res) => {
+const OtpVerify = async (req, res) => {
   try {
-    console.log(req.body);
     const { otp, email } = req.body;
     if (!otp) {
       res.status(400).json({ msg: "Bad Request:- OTP is required" });
@@ -242,10 +233,8 @@ const otpverify = async (req, res) => {
 };
 
 //reset password
-
-const resetpass = async (req, res) => {
+const ResetPass = async (req, res) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     if (!password) {
       res.status(400).json({ msg: "Bad request:- Password is required" });
@@ -255,12 +244,6 @@ const resetpass = async (req, res) => {
       res.status(404).json({ msg: "Not found" });
     }
     console.log(isEmail, "dsfsdgsfh");
-
-    // Hash the new password
-    // const saltRounds = 10;
-    // const hashedPassword = await bcrypt.hash(password, saltRounds);
-    //update password
-    // isEmail.password = hashedPassword;
     isEmail.password = password;
 
     await isEmail.save();
@@ -269,32 +252,27 @@ const resetpass = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Internal Server error" });
   }
-
-  // const securepage  = async(req,res)=>{
-  //   try {
-  //     const users = await User.findOne();
-  //     res.status(200).json({ msg: "User Data", users });
-  //   } catch (error) {
-  //     res.status(500).json({ msg: "Internal Server error" });
-
-  //   }
-  // }
 };
 
-async function verifyUserSession(req, res) {
+const SecurePage = async (req, res) => {
   try {
-  } catch (error) {}
-}
+    console.log(req.user, "dgdhdhdg");
+    const user = req.user;
+    res.status(200).json({ msg: "WelCome to Secour Page!!!!", user });
+  } catch (error) {
+    res.status(500).json({ msg: "internal server error", error });
+  }
+};
 
 module.exports = {
-  registration,
+  Registration,
   home,
   login,
-  forgotpassword,
+  ForgotPassword,
   userUpload,
   upload,
   sendMail,
-  otpverify,
-  resetpass,
-  // securepage,
+  OtpVerify,
+  ResetPass,
+  SecurePage,
 };

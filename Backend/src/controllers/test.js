@@ -7,4 +7,4 @@
 // const { name, age = 50 } = obj;
 // console.log(name, age);
 
-console.log(Math.ceil(Math.random() * 1000000));
+// console.log(Math.ceil(Math.random() * 1000000));

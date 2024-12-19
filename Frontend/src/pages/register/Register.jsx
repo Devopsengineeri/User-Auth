@@ -1,12 +1,13 @@
 import "./Register.css";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { validateString } from "../validation/validation-fn";
 
 export default function Register() {
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -112,6 +113,8 @@ export default function Register() {
       toast.success("Form submitted successfully!");
 
       console.log("Form submitted successfully:", formData);
+
+      navigate("/");
 
       setFormData({
         firstName: "",
