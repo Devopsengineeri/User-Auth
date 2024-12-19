@@ -1,36 +1,48 @@
 import "./SecurePage.css"; // Add appropriate styles in this CSS file
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../GlobalContext/UserInfoContext";
+import { useEffect } from "react";
 
 const SecurePage = () => {
   const navigate = useNavigate();
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
 
-  // const [formData, setFormData] = useState({
-  //   firstName: "",
-  //   lastName: "",
-  //   email: "",
-  //   dob: "",
-  //   profilePicture: "",
-  // });
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/app/securepage", {
+          method: "GET",
+          credentials: "include", // Include session cookies if available
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token if needed
+          },
+        });
 
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search);
-  //   const email = params.get("email") || "";
-  //   setFormData((prev) => ({ ...prev, email }));
-  // }, [navigate.search]);
+        if (!response.ok) {
+          throw new Error("Unauthorized! Redirecting to login...");
+        }
+
+        const data = await response.json();
+        setUser(data.user); // Update context with user data
+      } catch (error) {
+        console.error(error.message);
+        handleLogout(); // Redirect to login if unauthorized
+      }
+    };
+
+    if (!user) {
+      fetchUserData();
+    }
+  }, [user, setUser]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Clear session data
+    navigate("/"); // Redirect to login page
+  };
 
   if (!user) {
     return <div>Loading user data...</div>;
   }
-
-  let image = `${user.profilePicture}`;
-  console.log(image);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear session data
-    navigate("/");
-  };
 
   return (
     <div className="user-dashboard-container">
@@ -43,7 +55,7 @@ const SecurePage = () => {
           />
         </div>
         <div className="user-details-section">
-          <h2 className="user-name">{user.firstName + user.lastName}</h2>
+          <h2 className="user-name">{`${user.firstName} ${user.lastName}`}</h2>
           <p className="user-email">{user.email}</p>
           <p className="user-dob">
             D.O.B.: {new Date(user.dob).toLocaleDateString()}
