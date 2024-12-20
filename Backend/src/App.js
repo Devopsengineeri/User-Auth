@@ -18,16 +18,17 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 console.log(path.join(__dirname, "uploads"));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send(";afnkgnklfhndth");
-});
+// app.get("/", (req, res) => {
+//   res.send(";afnkgnklfhndth");
+// });
 
-app.patch("/test/abc", (req, res) => {
-  console.log(req.body, "sss");
-});
+// app.patch("/test/abc", (req, res) => {
+//   console.log(req.body, "sss");
+// });
 
 app.use("/app", router);
 

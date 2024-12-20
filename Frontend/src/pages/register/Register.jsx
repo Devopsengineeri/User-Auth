@@ -101,7 +101,7 @@ export default function Register() {
         method: "POST",
         body: newFormData,
       });
-
+      console.log(response, "sfhsdjkadgabjk");
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(

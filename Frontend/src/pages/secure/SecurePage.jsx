@@ -2,6 +2,7 @@ import "./SecurePage.css"; // Add appropriate styles in this CSS file
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../GlobalContext/UserInfoContext";
 import { useEffect } from "react";
+// import { error } from "../../../../Backend/src/validators/userObject.valid";
 
 const SecurePage = () => {
   const navigate = useNavigate();
@@ -35,9 +36,21 @@ const SecurePage = () => {
     }
   }, [user, setUser]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear session data
-    navigate("/"); // Redirect to login page
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/app/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new error("logout failed");
+      }
+      localStorage.removeItem("token");
+      setUser(null);
+      navigate("/"); // Redirect to login page
+    } catch (error) {
+      console.error("error logout");
+    }
   };
 
   if (!user) {

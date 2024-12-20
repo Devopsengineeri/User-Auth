@@ -19,9 +19,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-//user regitration form
+
+//user registration form
 const Registration = async (req, res) => {
   try {
+    console.log(req.body, "dshdfjdjhndfl");
     const { firstName, lastName, email, dob, password, confirmPassword } =
       req.body;
 
@@ -33,10 +35,10 @@ const Registration = async (req, res) => {
         .json({ msg: "User Already Exit with this email Try Diffrent" });
     }
     const profilePicture = {
-      path: req.file.path.toString().replace("\\", "//"),
+      path: req.file.path.toString().replaceAll("\\", "/"),
       filename: req.file.filename, // Generated filename
     };
-
+    console.log(profilePicture);
     const Store = await User.create({
       firstName,
       lastName,
@@ -62,7 +64,7 @@ const home = async (req, res) => {
     res.send(error);
   }
 };
-
+console.log(Registration, "shfdffdjkl");
 //this is user login page
 const login = async (req, res) => {
   try {
@@ -264,6 +266,20 @@ const SecurePage = async (req, res) => {
   }
 };
 
+const LogOut = async (req, res) => {
+  try {
+    const authToken = req.cookies.authToken;
+
+    if (!authToken) {
+      return res.status(401).json({ msg: "User not authenticated" });
+    }
+    res.clearCookie("authToken", { httpOnly: true });
+    res.status(200).json({ msg: "LogOut Successfully" });
+  } catch (error) {
+    res.status(500).json({ msg: "internal server err" });
+  }
+};
+
 module.exports = {
   Registration,
   home,
@@ -275,4 +291,5 @@ module.exports = {
   OtpVerify,
   ResetPass,
   SecurePage,
+  LogOut,
 };
