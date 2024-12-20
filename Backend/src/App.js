@@ -1,12 +1,13 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const path = require("path");
 require("mongoose");
 require("./db/connection");
+const path = require("path");
 const cors = require("cors");
-const router = require("./routes/user.route");
 const { truncate } = require("fs");
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const router = require("./routes/user.route");
 const { verifyToken } = require("./middleware/validate.middlew");
+
 const app = express();
 const port = process.env.PORT || 5000;
 const corsOption = {
@@ -16,19 +17,11 @@ const corsOption = {
 };
 app.use(cookieParser());
 app.use(cors(corsOption));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-console.log(path.join(__dirname, "uploads"));
 
+app.use("/profileupload", express.static(path.join(__dirname, "profileupload")));
+console.log(path.join(__dirname, "profileupload"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// app.get("/", (req, res) => {
-//   res.send(";afnkgnklfhndth");
-// });
-
-// app.patch("/test/abc", (req, res) => {
-//   console.log(req.body, "sss");
-// });
 
 app.use("/app", router);
 

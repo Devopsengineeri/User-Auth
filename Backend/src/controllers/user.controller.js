@@ -11,7 +11,7 @@ const { rmSync, fstat } = require("fs");
 //user uplode file
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    return cb(null, "uploads");
+    return cb(null, "src/profileupload");
   },
   filename: function (req, file, cb) {
     return cb(null, Date.now() + path.extname(file.originalname));
@@ -35,10 +35,9 @@ const Registration = async (req, res) => {
         .json({ msg: "User Already Exit with this email Try Diffrent" });
     }
     const profilePicture = {
-      path: req.file.path.toString().replaceAll("\\", "/"),
+      path: req.file.path.toString().replaceAll("\\", "/").replace("src/", ""),
       filename: req.file.filename, // Generated filename
     };
-    console.log(profilePicture);
     const Store = await User.create({
       firstName,
       lastName,
@@ -138,8 +137,8 @@ const ForgotPassword = async (req, res) => {
         otpExpiration,
       }
     );
-    // console.log(User.otp, "asjfkksdhjsldg");
-    // //connect with smtp server
+
+  
     const transporter = await nodeMailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
@@ -164,8 +163,6 @@ const ForgotPassword = async (req, res) => {
   }
 };
 
-//const upload = multer({ dest: "uploads/" });
-
 const userUpload = async (req, res) => {
   try {
     console.log(req.file, "sjdfisdjgifdjjfd");
@@ -173,11 +170,6 @@ const userUpload = async (req, res) => {
     if (!req.file) {
       return res.status(400).send({ msg: "No file uploade" });
     }
-    // const profilePicture = {
-    //   path: req.file.path,
-    //   filename: req.file.originalname,
-    // };
-    // await User.create({ profilePicture });
     res.status(200).send({ msg: "Profile picture upload Succesfull" });
   } catch (error) {
     res.status(500).send({ msg: "Internal server Error" });
@@ -264,7 +256,7 @@ const SecurePage = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "internal server error", error });
   }
-};
+}
 
 const LogOut = async (req, res) => {
   try {

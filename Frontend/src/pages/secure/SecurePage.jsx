@@ -1,8 +1,7 @@
-import "./SecurePage.css"; // Add appropriate styles in this CSS file
+import "./SecurePage.css"; 
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../GlobalContext/UserInfoContext";
 import { useEffect } from "react";
-// import { error } from "../../../../Backend/src/validators/userObject.valid";
 
 const SecurePage = () => {
   const navigate = useNavigate();
@@ -13,9 +12,9 @@ const SecurePage = () => {
       try {
         const response = await fetch("http://localhost:5000/app/securepage", {
           method: "GET",
-          credentials: "include", // Include session cookies if available
+          credentials: "include", 
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token if needed
+            Authorization: `Bearer ${localStorage.getItem("token")}`, 
           },
         });
 
@@ -24,10 +23,10 @@ const SecurePage = () => {
         }
 
         const data = await response.json();
-        setUser(data.user); // Update context with user data
+        setUser(data.user); 
       } catch (error) {
         console.error(error.message);
-        handleLogout(); // Redirect to login if unauthorized
+        handleLogout(); 
       }
     };
 
@@ -47,7 +46,7 @@ const SecurePage = () => {
       }
       localStorage.removeItem("token");
       setUser(null);
-      navigate("/"); // Redirect to login page
+      navigate("/"); 
     } catch (error) {
       console.error("error logout");
     }
