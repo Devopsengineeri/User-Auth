@@ -138,7 +138,6 @@ const ForgotPassword = async (req, res) => {
       }
     );
 
-  
     const transporter = await nodeMailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
@@ -256,8 +255,8 @@ const SecurePage = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "internal server error", error });
   }
-}
-
+};
+// user logOut
 const LogOut = async (req, res) => {
   try {
     const authToken = req.cookies.authToken;
@@ -271,7 +270,32 @@ const LogOut = async (req, res) => {
     res.status(500).json({ msg: "internal server err" });
   }
 };
+// newPassword add
+const newPassword = async (req, res) => {
+  try {
+    const { oldpassword, newpassword } = req.body;
+    if (!oldpassword || !newpassword) {
+      return res.status(400).json({
+        msg: "Bad Request:-Email , oldpassword, newpassword are required",
+      });
+    }
+    const userId = req.user.id;
+    const user = await User.findById({ _id: userId });
 
+    if (!user) {
+      res.status(404).json({ msg: "Not Found" });
+    }
+    const isMatch = await bcrypt.compare(oldpassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Wrong password." });
+    }
+    user.password = newpassword;
+    await user.save();
+    return res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    res.status(500).json({ msg: "internal Server error" });
+  }
+};
 module.exports = {
   Registration,
   home,
@@ -284,4 +308,5 @@ module.exports = {
   ResetPass,
   SecurePage,
   LogOut,
+  newPassword,
 };
