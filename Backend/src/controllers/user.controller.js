@@ -142,8 +142,8 @@ const ForgotPassword = async (req, res) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "maya.rath26@ethereal.email",
-        pass: "kgnRf9KgggYnv6jFCZ",
+        user: 'cristopher.hoppe77@ethereal.email',
+        pass: 'bxnd1HyxEpYqJQGqt3'
       },
     });
     // Set up the email transporter
@@ -271,7 +271,7 @@ const LogOut = async (req, res) => {
   }
 };
 // newPassword add
-const newPassword = async (req, res) => {
+const updatePassword = async (req, res) => {
   try {
     const { oldpassword, newpassword } = req.body;
     if (!oldpassword || !newpassword) {
@@ -308,5 +308,5 @@ module.exports = {
   ResetPass,
   SecurePage,
   LogOut,
-  newPassword,
+  updatePassword,
 };

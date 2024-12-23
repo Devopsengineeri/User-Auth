@@ -14,7 +14,7 @@ const {
   ResetPass,
   SecurePage,
   LogOut,
-  newPassword,
+  updatePassword,
 } = require("../controllers/user.controller");
 const validate = require("../middleware/validate.middlew");
 const userObjectSchema = require("../validators/userObject.valid");
@@ -28,5 +28,5 @@ router.post("/otpverify", OtpVerify);
 router.patch("/resetpass", ResetPass);
 router.get("/securepage", verifyToken, SecurePage);
 router.post("/logout", LogOut);
-router.put("/newpassword", verifyToken, newPassword);
+router.patch("/updatepassword", verifyToken, updatePassword);
 module.exports = router;

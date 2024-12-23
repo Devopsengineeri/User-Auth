@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 export default function ResetPass() {
   const navigate = useNavigate();
-  const location = useLocation(); // Import useLocation
+  const location = useLocation(); 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -14,11 +14,10 @@ export default function ResetPass() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Extract email from URL query parameters
     const params = new URLSearchParams(location.search);
     const email = params.get("email") || "";
     setFormData((prev) => ({ ...prev, email }));
-  }, [location.search]); // Depend on location.search, not navigate.search
+  }, [location.search]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;

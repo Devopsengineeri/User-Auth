@@ -7,6 +7,7 @@ import NavBar from "./pages/navbar/Navbar";
 import SecurePage from "./pages/secure/SecurePage";
 import ResetPass from "./pages/resetpass/ResetPass";
 import OtpVerify from "./pages/otpvalidate/OtpVerify";
+import UpdatePassword from "./pages/updatepassword/UpdatePassword";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/securepage" element={<SecurePage />} />
           <Route path="/resetpass" element={<ResetPass />} />
           <Route path="/otpverify" element={<OtpVerify />} />
+          <Route path="/updatepassword" element={<UpdatePassword />} />
         </Routes>
       </BrowserRouter>
     </>

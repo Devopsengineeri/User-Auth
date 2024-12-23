@@ -1,5 +1,5 @@
 import "./Login.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,6 +15,12 @@ export default function Login() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const email = params.get("email") || "";
+    setFormData((prev) => ({ ...prev, email }));
+  }, [navigate.search]);
 
   const [errors, setErrors] = useState({});
 

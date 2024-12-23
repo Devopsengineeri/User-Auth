@@ -19,6 +19,8 @@ export default function Register() {
     confirmPassword: "",
   });
 
+  
+
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -114,7 +116,8 @@ export default function Register() {
 
       console.log("Form submitted successfully:", formData);
 
-      navigate("/");
+      // navigate("/");
+      navigate(`/?email=${formData.email}`);
 
       setFormData({
         firstName: "",
